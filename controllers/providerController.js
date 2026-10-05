@@ -92,7 +92,13 @@ const getProviderById = async (req, res) => {
 const updateProviderServicePricing = async (req, res) => {
   try {
     const { categoryId, problemId, serviceCharge, labourCharge } = req.body;
-    const providerId = req.params.id;
+    let providerId = req.params.id;
+
+    // Check if the id passed is actually a userId
+    const providerByUserId = await Provider.findOne({ userId: providerId });
+    if (providerByUserId) {
+      providerId = providerByUserId._id;
+    }
 
     let ps = await ProviderService.findOne({ providerId, categoryId, problemId });
     if (ps) {
